@@ -1,0 +1,23 @@
+---
+- name: Deploy Docker Container
+  hosts: node-server
+  become: yes
+  tasks:
+    - name: Pull Docker image from Docker Hub
+      docker_image:
+        name: "{{ docker_image }}"
+        source: pull
+
+    - name: Stop and remove existing container
+      docker_container:
+        name: "my_docker_app"
+        state: absent
+      ignore_errors: yes
+
+    - name: Run new Docker container
+      docker_container:
+        name: "my_docker_app"
+        image: "{{ docker_image }}"
+        state: started
+        ports:
+          - "80:80"
