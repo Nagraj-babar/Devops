@@ -1,23 +1,12 @@
 ---
-- name: Deploy Docker Container
-  hosts: node-server
-  become: yes
+- hosts: all  # Target all hosts in your inventory
+  become: yes # Required for installing packages (needs root privileges)
   tasks:
-    - name: Pull Docker image from Docker Hub
-      docker_image:
-        name: "{{ docker_image }}"
-        source: pull
+    - name: Update apt cache (good practice)
+      apt:
+        update_cache: yes
 
-    - name: Stop and remove existing container
-      docker_container:
-        name: "my_docker_app"
-        state: absent
-      ignore_errors: yes
-
-    - name: Run new Docker container
-      docker_container:
-        name: "my_docker_app"
-        image: "{{ docker_image }}"
-        state: started
-        ports:
-          - "80:80"
+    - name: Install Apache2
+      apt:
+        name: apache2
+        state: present # Ensure it's installed
