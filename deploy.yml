@@ -1,45 +1,7 @@
----
-- hosts: node-server  # Target all hosts or a specific group
-  become: yes # Required for Docker commands
-  vars:
-    container_name: my_app_container # Name of your container (e.g., my_app_container)
-    docker_image_name: "nagraj0477/my_ci_pipeline:latest"
-    # The docker_image_name should be passed as an extra variable when running the playbook
-    # e.g., -e "docker_image_name=nagraj0477/my_app:latest"
-
-  tasks:
-    - name: Pull Docker image
-      docker_image:
-        name: "{{ docker_image_name }}"
-        pull: yes
-
-    - name: Get running containers (robust check)
-      docker_container_info:
-        name: "my_app_container"
-      register: container_info
-
-    - name: Stop and remove existing container (if running and exists)
-      docker_container:
-        name: "my_app_container"
-        state: absent
-      when: container_info.results is defined and container_info.results | length > 0 and container_info.results[0].State.Status == "running"
-
-    - name: Remove stopped container (if it exists)
-      docker_container:
-        name: "my_app_container"
-        state: absent
-      when: container_info.results is defined and container_info.results | length > 0 and container_info.results[0].State.Status != "running" and container_info.results[0].Id is defined
-
-    - name: Run Docker container
-      docker_container:
-        name: "my_app_container"
-        image: "{{ docker_image_name }}"
-        state: started
-        ports: # Expose any ports if required
-          - "80:80" # Example port mapping (host:container)
-        detach: yes # Run in detached mode (background)
-      register: container_result # Register result for debugging
-
-    - name: Debug container result
-      debug:
-        msg: "Container creation result: container is deployed"
+version: '3'
+services:
+  app:
+    image: nagraj0477/my_ci_pipeline:latest
+    container_name: my_app_container
+    ports:
+      - "80:80"
