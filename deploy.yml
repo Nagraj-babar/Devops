@@ -3,13 +3,15 @@
   become: yes # Required for Docker commands
   vars:
     container_name: my_app_container # Name of your container (e.g., my_app_container)
+    docker_image_name: "nagraj0477/my_ci_pipeline:latest"
+    docker_image_name: "{{ docker_image_name | string }}"
     # The docker_image_name should be passed as an extra variable when running the playbook
     # e.g., -e "docker_image_name=nagraj0477/my_app:latest"
 
   tasks:
     - name: Pull Docker image
       docker_image:
-        name: "nagraj0477/my_ci_pipeline:latest"
+        name: "{{ docker_image_name }}"
         pull: yes
 
     - name: Get running containers (robust check)
@@ -32,7 +34,7 @@
     - name: Run Docker container
       docker_container:
         name: "my_app_container"
-        image: "nagraj0477/my_ci_pipeline:latest"
+        image: "{{ docker_image_name }}"
         state: started
         ports: # Expose any ports if required
           - "80:80" # Example port mapping (host:container)
