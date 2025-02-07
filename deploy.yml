@@ -4,7 +4,6 @@
   vars:
     container_name: my_app_container # Name of your container (e.g., my_app_container)
     docker_image_name: "nagraj0477/my_ci_pipeline:latest"
-    docker_image_name: "{{ docker_image_name | string }}"
     # The docker_image_name should be passed as an extra variable when running the playbook
     # e.g., -e "docker_image_name=nagraj0477/my_app:latest"
 
