@@ -1,4 +1,3 @@
-version: '3'
 services:
   app:
     image: nagraj0477/my_ci_pipeline:latest
